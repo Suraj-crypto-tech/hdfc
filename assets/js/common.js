@@ -31,24 +31,29 @@
 // }.call(window, window.jQuery);
 
 document.addEventListener('DOMContentLoaded', function () {
-  const form = document.querySelector('.form-box form') || document.querySelector('.form-box');
+  const form = document.querySelector('.form-box form');
   if (!form) return;
 
   const inputs = Array.from(form.querySelectorAll('input[type="text"], input[type="email"]'));
   const checkbox = form.querySelector('input[type="checkbox"]');
-  const submitBtn = form.querySelector('button');
+
+  const thankYouMessage = document.createElement('p');
+  thankYouMessage.textContent = "Thank you! Your form has been submitted successfully.";
+  thankYouMessage.style.display = "none";
+  thankYouMessage.style.color = "#008000";
+  thankYouMessage.style.fontSize = "20px";
+  thankYouMessage.style.marginTop = "10px";
+  thankYouMessage.style.textAlign = "center";
+  form.parentElement.appendChild(thankYouMessage); // append outside the form
 
   form.addEventListener('submit', function (e) {
     e.preventDefault();
     let valid = true;
 
-    // Reset border colors
-    inputs.forEach(input => input.style.borderColor = '#7f7f7f');
-
-    // Validate inputs
     inputs.forEach(input => {
       const value = input.value.trim();
       const placeholder = input.getAttribute('placeholder').toLowerCase();
+      input.style.borderColor = '#7f7f7f'; // reset
 
       if (!value) {
         input.style.borderColor = 'red';
@@ -56,44 +61,25 @@ document.addEventListener('DOMContentLoaded', function () {
         return;
       }
 
-      if (placeholder.includes('name') && !/^[A-Za-z\s]+$/.test(value)) input.style.borderColor = 'red';
-      if (placeholder.includes('email') && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) input.style.borderColor = 'red';
-      if ((placeholder.includes('mob') || placeholder.includes('phone')) && !/^\d{10}$/.test(value)) input.style.borderColor = 'red';
+      if (placeholder.includes('name') && !/^[A-Za-z\s]+$/.test(value)) valid = false;
+      if (placeholder.includes('email') && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) valid = false;
+      if ((placeholder.includes('mob') || placeholder.includes('phone')) && !/^\d{10}$/.test(value)) valid = false;
     });
 
-    // Checkbox validation
     if (checkbox && !checkbox.checked) {
       checkbox.parentElement.style.color = 'red';
       valid = false;
     }
 
     if (valid) {
-      // Hide all inputs except First Name
-      inputs.forEach(input => {
-        if (!input.placeholder.toLowerCase().includes('first name')) {
-          input.parentElement.style.display = 'none';
-        }
-      });
-      if (checkbox) checkbox.parentElement.style.display = 'none';
-      if (submitBtn) submitBtn.style.display = 'none';
+      // Hide the form
+      form.style.display = "none";
 
-      // Get First Name value
-      const firstNameInput = form.querySelector('input[placeholder="First Name"]');
-      const firstName = firstNameInput ? firstNameInput.value.trim() : '';
-
-      // Create thank you message
-      const thankYouMessage = document.createElement('p');
-      thankYouMessage.innerHTML = `Dear ${firstName},<br>Thank you! Your form has been submitted successfully.`;
-      thankYouMessage.style.color = "#008000";
-      thankYouMessage.style.fontSize = "18px";
-      thankYouMessage.style.marginTop = "5px";
-
-      // Insert below First Name input
-      firstNameInput.parentNode.insertBefore(thankYouMessage, firstNameInput.nextSibling);
+      // Show thank you message
+      thankYouMessage.style.display = "block";
     }
   });
 });
-
 
 
 
