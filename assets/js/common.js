@@ -31,15 +31,13 @@
 // }.call(window, window.jQuery);
 
 document.addEventListener('DOMContentLoaded', function () {
-  const formBox = document.querySelector('.form-box');
-  if (!formBox) return;
+  const form = document.querySelector('.form-box form');
+  if (!form) return;
 
-  const form = formBox.querySelector('form') || formBox; // Support both <form> or div wrapper
   const inputs = Array.from(form.querySelectorAll('input[type="text"], input[type="email"]'));
   const checkbox = form.querySelector('input[type="checkbox"]');
-  const submitBtn = form.querySelector('button');
-
   const thankYouMessage = document.createElement('p');
+
   thankYouMessage.textContent = "Thank you! Your form has been submitted successfully.";
   thankYouMessage.style.display = "none";
   thankYouMessage.style.color = "#008000";
@@ -48,79 +46,71 @@ document.addEventListener('DOMContentLoaded', function () {
   thankYouMessage.style.textAlign = "center";
   form.appendChild(thankYouMessage);
 
-  submitBtn.addEventListener('click', function (e) {
-    e.preventDefault(); 
+  // Listen to form submit event
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
     let valid = true;
 
     inputs.forEach(input => {
       const value = input.value.trim();
       const placeholder = input.getAttribute('placeholder').toLowerCase();
-      input.style.borderColor = '#7f7f7f'; 
+      input.style.borderColor = '#7f7f7f'; // reset border
 
-      if (placeholder.includes('name')) {
-        if (!/^[A-Za-z\s]+$/.test(value)) {
-          input.style.borderColor = 'red';
-          valid = false;
-        }
+      // Check empty fields
+      if (!value) {
+        input.style.borderColor = 'red';
+        valid = false;
+        return;
       }
 
-       if (placeholder.includes('email')) {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(value)) {
-          input.style.borderColor = 'red';
-          valid = false;
-        }
-      }
-
-      if (placeholder.includes('mob') || placeholder.includes('phone')) {
-        if (!/^\d{10}$/.test(value)) {
-          input.style.borderColor = 'red';
-          valid = false;
-        }
-      }
-
-      if (placeholder.includes('dob') && !value) {
+      // Name validation
+      if (placeholder.includes('name') && !/^[A-Za-z\s]+$/.test(value)) {
         input.style.borderColor = 'red';
         valid = false;
       }
 
-      if (placeholder.includes('city') || placeholder.includes('state')) {
-        if (!/^[A-Za-z\s]+$/.test(value)) {
-          input.style.borderColor = 'red';
-          valid = false;
-        }
+      // Email validation
+      if (placeholder.includes('email') && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+        input.style.borderColor = 'red';
+        valid = false;
+      }
+
+      // Mobile validation
+      if ((placeholder.includes('mob') || placeholder.includes('phone')) && !/^\d{10}$/.test(value)) {
+        input.style.borderColor = 'red';
+        valid = false;
+      }
+
+      // City/State validation
+      if ((placeholder.includes('city') || placeholder.includes('state')) && !/^[A-Za-z\s]+$/.test(value)) {
+        input.style.borderColor = 'red';
+        valid = false;
+      }
+
+      // DOB check
+      if (placeholder.includes('dob') && !value) {
+        input.style.borderColor = 'red';
+        valid = false;
       }
     });
 
     if (checkbox && !checkbox.checked) {
-      alert("Please accept Terms & Conditions");
+      checkbox.parentElement.style.color = 'red';
       valid = false;
+    } else if (checkbox) {
+      checkbox.parentElement.style.color = 'inherit';
     }
 
     if (valid) {
       thankYouMessage.style.display = "block";
 
-      
       inputs.forEach(input => (input.value = ''));
       if (checkbox) checkbox.checked = false;
 
-      
       setTimeout(() => {
         thankYouMessage.style.display = "none";
       }, 4000);
-
     }
-  });
-
-  const faqItems = document.querySelectorAll('.faq-item');
-  faqItems.forEach(item => {
-    item.addEventListener('click', function () {
-      item.classList.toggle('active');
-      const answer = item.querySelector('p');
-      if (answer) {
-        answer.style.display = item.classList.contains('active') ? 'block' : 'none';
-      }
-    });
   });
 });
 
