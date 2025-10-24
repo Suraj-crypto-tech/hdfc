@@ -94,6 +94,9 @@ header {
   height: 620px;
   width: 41.6666666667vw;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column; /* stack inputs & button vertically */
+  align-items: center;
 
   .form-row {
     display: flex;
@@ -363,4 +366,12 @@ header {
 
 nav {
   margin-right: -71px;
+}
+
+button{
+  display: inline-block;
+  padding: 5px 15px;
+  cursor: pointer;
+  margin-top: 15px;
+  margin-left: 283px;
 }
