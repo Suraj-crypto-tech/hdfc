@@ -37,23 +37,18 @@ document.addEventListener('DOMContentLoaded', function () {
   const inputs = Array.from(form.querySelectorAll('input[type="text"], input[type="email"]'));
   const checkbox = form.querySelector('input[type="checkbox"]');
 
-  const thankYouMessage = document.createElement('p');
-  thankYouMessage.textContent = "Thank you! Your form has been submitted successfully.";
-  thankYouMessage.style.display = "none";
-  thankYouMessage.style.color = "#008000";
-  thankYouMessage.style.fontSize = "20px";
-  thankYouMessage.style.marginTop = "10px";
-  thankYouMessage.style.textAlign = "center";
-  form.parentElement.appendChild(thankYouMessage); // append outside the form
-
   form.addEventListener('submit', function (e) {
     e.preventDefault();
     let valid = true;
 
+    // Reset border colors
+    inputs.forEach(input => input.style.borderColor = '#7f7f7f');
+    if (checkbox) checkbox.parentElement.style.color = '#000'; // reset checkbox color
+
+    // Validate inputs
     inputs.forEach(input => {
       const value = input.value.trim();
       const placeholder = input.getAttribute('placeholder').toLowerCase();
-      input.style.borderColor = '#7f7f7f'; // reset
 
       if (!value) {
         input.style.borderColor = 'red';
@@ -61,11 +56,12 @@ document.addEventListener('DOMContentLoaded', function () {
         return;
       }
 
-      if (placeholder.includes('name') && !/^[A-Za-z\s]+$/.test(value)) valid = false;
-      if (placeholder.includes('email') && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) valid = false;
-      if ((placeholder.includes('mob') || placeholder.includes('phone')) && !/^\d{10}$/.test(value)) valid = false;
+      if (placeholder.includes('name') && !/^[A-Za-z\s]+$/.test(value)) input.style.borderColor = 'red';
+      if (placeholder.includes('email') && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) input.style.borderColor = 'red';
+      if ((placeholder.includes('mob') || placeholder.includes('phone')) && !/^\d{10}$/.test(value)) input.style.borderColor = 'red';
     });
 
+    // Checkbox validation
     if (checkbox && !checkbox.checked) {
       checkbox.parentElement.style.color = 'red';
       valid = false;
@@ -75,9 +71,35 @@ document.addEventListener('DOMContentLoaded', function () {
       // Hide the form
       form.style.display = "none";
 
-      // Show thank you message
-      thankYouMessage.style.display = "block";
+      // Get First Name
+      const firstNameInput = form.querySelector('input[placeholder="First Name"]');
+      const firstName = firstNameInput ? firstNameInput.value.trim() : '';
+
+      // Create personalized thank-you message
+      const thankYouMessage = document.createElement('p');
+      thankYouMessage.innerHTML = `Dear ${firstName},<br>Thank you! Your form has been submitted successfully.`;
+      thankYouMessage.style.color = "#008000";
+      thankYouMessage.style.fontSize = "20px";
+      thankYouMessage.style.marginTop = "10px";
+      thankYouMessage.style.textAlign = "center";
+
+      // Append the message below the form
+      form.parentElement.appendChild(thankYouMessage);
     }
+  });
+
+  // ===== Accordion / FAQ functionality =====
+  const faqItems = document.querySelectorAll('.faq-item');
+  faqItems.forEach(item => {
+    const answer = item.querySelector('p');
+    if (answer) answer.style.display = 'none'; // hide initially
+
+    item.addEventListener('click', function () {
+      item.classList.toggle('active');
+      if (answer) {
+        answer.style.display = item.classList.contains('active') ? 'block' : 'none';
+      }
+    });
   });
 });
 
