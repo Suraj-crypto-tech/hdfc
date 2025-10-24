@@ -1,0 +1,1 @@
+!function(n){}.call(window,window.jQuery);

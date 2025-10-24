@@ -1,0 +1,11 @@
+$RECYCLE.BIN
+node_modules
+npm-debug.log
+package-lock.json
+yarn.lock
+yarn-error.json
+yarn-error.log
+.sass-cache
+.sublime-gulp.cache
+.DS_Store
+.editorconfig

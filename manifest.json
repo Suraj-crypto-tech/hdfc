@@ -1,0 +1,21 @@
+{
+  "short_name": "HTML Project",
+  "name": "HTML Project",
+  "icons": [
+    {
+      "src": "assets/images/icons-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "assets/images/icons-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "index.php",
+  "background_color": "#ffffff",
+  "theme_color": "#249adf",
+  "display": "standalone",
+  "orientation": "portrait"
+}
